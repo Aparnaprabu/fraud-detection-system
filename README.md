@@ -1,326 +1,198 @@
-# Real-Time Fraud Detection System
+# 🛡️ Real-Time Payment Fraud Detection System
+
 ### An Explainable, Pre-Authorization Fraud Detection Engine
 
-A machine learning-based fraud detection system designed to identify suspicious mobile-money transactions **before authorization**. It combines point-in-time feature engineering, an XGBoost classification model, SHAP-based explanations, and a three-tier decision engine to support automated fraud prevention.
+An end-to-end machine learning system for identifying suspicious mobile-money transactions **before authorization**. Powered by XGBoost, point-in-time feature engineering, TreeSHAP explainability, and a three-tier automated risk decision engine.
 
-The project includes a FastAPI backend, an interactive Streamlit dashboard, and Docker-based deployment.
+<p align="center">
+  <a href="https://fraud-detection-dashboard-lodr.onrender.com">
+    <img src="https://img.shields.io/badge/🚀_LIVE_DEMO-Launch_Dashboard-16A34A?style=for-the-badge" alt="Live Demo">
+  </a>
+  <a href="https://fraud-detection-api-x946.onrender.com/docs">
+    <img src="https://img.shields.io/badge/API-Swagger_Docs-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="API Docs">
+  </a>
+</p>
 
----
-
-## 1. Project Overview
-
-Financial fraud detection systems must identify suspicious transactions quickly without unnecessarily blocking legitimate customers.
-
-This project addresses that challenge by building a real-time fraud detection pipeline that:
-
-- Analyzes transaction information available before authorization.
-- Predicts the probability that a transaction is fraudulent.
-- Routes transactions into automated approval, manual review, or automatic blocking.
-- Explains model predictions using SHAP.
-- Provides an interactive dashboard for transaction monitoring and investigation.
-
-**Dataset:** PaySim mobile-money transaction dataset (synthetic).
-
-**Model:** XGBoost (champion model).
-
-**Backend:** FastAPI
-**Frontend:** Streamlit
-**Explainability:** SHAP
-**Deployment:** Docker and Docker Compose
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/XGBoost-EC6B23?style=for-the-badge" alt="XGBoost">
+  <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI">
+  <img src="https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Streamlit">
+  <img src="https://img.shields.io/badge/SHAP-8A2BE2?style=for-the-badge" alt="SHAP">
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker">
+  <img src="https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white" alt="Render">
+</p>
 
 ---
 
-## 2. Key Features
+## 🌐 Live Deployment
 
-### Fraud Prediction
-- Machine learning-based transaction risk scoring.
-- Handles highly imbalanced fraud data.
-- Uses a threshold-based decision policy.
+| Service | Description | Link |
+|---|---|---|
+| Streamlit Dashboard | Interactive fraud monitoring application | [Launch Dashboard](https://fraud-detection-dashboard-lodr.onrender.com) |
+| FastAPI Backend | Transaction scoring API | [API Documentation](https://fraud-detection-api-x946.onrender.com/docs) |
+| Health Endpoint | API and model health status | [Check Health](https://fraud-detection-api-x946.onrender.com/health) |
+| GitHub Repository | Source code and documentation | [View Repository](https://github.com/Aparnaprabu/fraud-detection-system) |
 
-### Three-Tier Decision Engine
+*Deployment is hosted on Render's free tier. The first request after inactivity may take longer while the service starts.*
 
-| Decision | Meaning |
+---
+
+## 📸 Application Preview
+
+### 1. Live Transaction Monitoring
+
+![Live Transaction Monitoring](docs/screenshots/live-feed.png)
+
+Monitor scored transactions, fraud probabilities, automated decisions, and response latency through an interactive transaction stream.
+
+### 2. Operations Triage Queue
+
+![Operations Triage Queue](docs/screenshots/triage-queue.png)
+
+Identify transactions requiring investigation, filter flagged transactions by severity, and select individual transactions for further analysis.
+
+### 3. Explainable AI – TreeSHAP Inspector
+
+![TreeSHAP Inspector](docs/screenshots/shap-inspector.png)
+
+Explore transaction-level fraud probabilities, feature attributions, and human-readable reason codes explaining suspicious activity.
+
+### 4. Manual Transaction Testing Sandbox
+
+![Manual Transaction Testing](docs/screenshots/manual-testing.png)
+
+Submit custom transaction details and observe real-time fraud scoring, automated decisions, and SHAP-based explanations.
+
+---
+
+## 🚀 Project Overview
+
+Financial fraud detection systems must identify suspicious transactions quickly while avoiding unnecessary declines of legitimate payments.
+
+This project implements a **pre-authorization fraud detection pipeline** that:
+
+- Evaluates transactions using information available at decision time.
+- Predicts fraud probability using an XGBoost classification model.
+- Routes transactions through an automated three-tier decision engine.
+- Explains individual predictions using TreeSHAP.
+- Provides an interactive dashboard for monitoring and investigation.
+- Exposes prediction and health-check endpoints through FastAPI.
+
+**Dataset:** PaySim synthetic mobile-money transactions  
+**Champion Model:** XGBoost  
+**Model Features:** 15 pre-authorization features  
+**Evaluation:** Chronological out-of-time test set
+
+---
+
+## ⭐ Key Features
+
+| Capability | Implementation |
 |---|---|
-| AUTO_APPROVE | Low-risk transaction is approved automatically |
-| MANUAL_REVIEW | Uncertain transaction is sent for further investigation |
-| AUTO_BLOCK | High-risk transaction is blocked automatically |
-
-### Explainable AI
-- SHAP-based feature contribution analysis.
-- Helps identify the factors influencing a fraud prediction.
-- Supports transaction-level investigation.
-
-### Point-in-Time Feature Engineering
-- Uses transaction information available at decision time.
-- Includes historical recipient-account activity.
-- Avoids using post-transaction information during prediction.
-
-### Interactive Dashboard
-- Live transaction feed.
-- Operations and fraud triage.
-- SHAP transaction inspector.
-- Manual transaction testing sandbox.
-
-### API and Containerization
-- FastAPI prediction and health endpoints.
-- Docker-based application packaging.
-- Docker Compose for running the API and dashboard together.
+| Fraud Prediction | XGBoost probability-based classification |
+| Risk Routing | Three-tier automated decision policy |
+| Explainable AI | Transaction-level TreeSHAP explanations |
+| Feature Engineering | Point-in-time historical account features |
+| Leakage Prevention | Excludes seven post-settlement leakage features |
+| Transaction Monitoring | Interactive Streamlit dashboard |
+| Backend API | FastAPI prediction and health endpoints |
+| State Management | Memory-mapped NumPy destination-account cache |
+| Deployment | Docker, Docker Compose and Render |
 
 ---
 
-## 3. System Architecture
+## ⚖️ Three-Tier Fraud Decision Engine
 
-```mermaid
-flowchart TD
-    A[Incoming Transaction] --> B[Feature Engineering]
-    B --> C[Point-in-Time Customer State]
-    C --> D[XGBoost Fraud Model]
-    D --> E[Fraud Probability]
-    E --> F{Decision Engine}
-    F -->|Low Risk| G[AUTO_APPROVE]
-    F -->|Medium Risk| H[MANUAL_REVIEW]
-    F -->|High Risk| I[AUTO_BLOCK]
-    D --> J[SHAP Explanation]
-    G --> K[FastAPI]
-    H --> K
-    I --> K
-    J --> K
-    K --> L[Streamlit Dashboard]
-```
+The system converts fraud probabilities into operational decisions using validation-tuned thresholds.
 
-### Workflow
+| Fraud Probability | Decision | Action |
+|---|---|---|
+| Below 0.3829 | 🟢 AUTO_APPROVE | Automatically approve |
+| 0.3829 to below 0.9571 | 🟡 MANUAL_REVIEW | Send for investigation |
+| 0.9571 or above | 🔴 AUTO_BLOCK | Automatically block |
 
-1. A transaction enters the system.
-2. The feature engineering module generates prediction-time features.
-3. Historical recipient-account information is retrieved from the customer state cache.
-4. The XGBoost model calculates fraud probability.
-5. The decision engine assigns a risk-based action.
-6. SHAP generates explanations for the prediction.
-7. FastAPI returns the prediction and related information.
-8. The Streamlit dashboard displays the results.
+This policy separates low-risk transactions from uncertain and high-risk transactions.
 
 ---
 
-## 4. Project Structure
-
-```text
-fraud-detection-system/
-│
-├── dashboard/
-│   ├── app.py
-│   ├── components.py
-│   └── __init__.py
-│
-├── data/
-│   ├── raw/
-│   └── processed/
-│
-├── models/
-│   ├── model.pkl
-│   ├── dest_state.joblib
-│   ├── eval_metrics.json
-│   └── feature_meta.json
-│
-├── notebooks/
-│   ├── 01_exploratory_data_analysis.ipynb
-│   ├── 02_feature_engineering_experiments.ipynb
-│   └── 03_model_prototyping_and_eval.ipynb
-│
-├── src/
-│   ├── api.py
-│   ├── config.py
-│   ├── data_loader.py
-│   ├── explain.py
-│   ├── features.py
-│   ├── simulator.py
-│   └── train.py
-│
-├── tests/
-│   ├── test_api.py
-│   ├── test_data_leakage.py
-│   ├── test_explain.py
-│   ├── test_features.py
-│   └── test_model.py
-│
-├── Dockerfile
-├── docker-compose.yml
-├── requirements.txt
-├── render.yaml
-└── README.md
-```
-
-### Main Components
-
-| Component | Responsibility |
-|---|---|
-| `src/api.py` | FastAPI application and prediction endpoints |
-| `src/features.py` | Feature engineering and customer state handling |
-| `src/explain.py` | SHAP-based model explanations |
-| `src/train.py` | Model training and evaluation |
-| `src/data_loader.py` | Dataset loading |
-| `src/simulator.py` | Transaction simulation |
-| `dashboard/app.py` | Main Streamlit dashboard |
-| `dashboard/components.py` | Dashboard visualization components |
-| `models/` | Trained model and supporting artifacts |
-| `tests/` | Automated tests |
-
----
-
-## 5. Data Exploration and Preprocessing
-
-The first notebook, `01_exploratory_data_analysis.ipynb`, explores the dataset and establishes a leak-free evaluation strategy.
-
-Topics covered:
-
-- Class imbalance and dataset scale.
-- Fraud distribution across transaction types.
-- Limitations of the legacy `isFlaggedFraud` rule.
-- Chronological splitting of transaction data.
-
-### Chronological Data Split
-
-Instead of randomly splitting transactions, the project uses chronological boundaries:
-
-| Dataset | Transaction steps | Number of rows |
-|---|---:|---:|
-| Training | 1–550 | 6,166,019 |
-| Validation | 551–650 | 115,770 |
-| Testing | 651–743 | 80,831 |
-
-This simulates a more realistic situation in which a model learns from past transactions and is evaluated on future transactions.
-
----
-
-## 6. Feature Engineering
-
-The second notebook, `02_feature_engineering_experiments.ipynb`, focuses on point-in-time feature engineering and online-offline consistency.
-
-### Important Feature Engineering Concepts
-
-**Balance discrepancy**
-
-Uses transaction amount and account balance information to identify unusual balance changes.
-
-**Stateful point-in-time aggregations**
-
-Maintains historical recipient-account information using transactions available before the current prediction.
-
-**Online-offline parity**
-
-Aims to ensure that features generated during model development are consistent with those generated when the API processes live transactions.
-
-### Feature Categories
-
-- Transaction amount.
-- Origin and destination balances.
-- Transaction time.
-- Transaction type.
-- Origin drain ratio.
-- Destination account history.
-- Merchant destination indicators.
-
-The serving pipeline uses 15 model features.
-
-### Preventing Data Leakage
-
-Post-transaction information can make a fraud model appear more accurate than it would be in a real pre-authorization environment.
-
-The project audits and removes seven post-settlement features, including destination and origin balance information that would not be available at the required prediction time.
-
-A depth-2 tree experiment using leakage-prone features achieved a PR-AUC of 0.9684, illustrating why leakage checks are important.
-
----
-
-## 7. Model Development and Evaluation
-
-The third notebook, `03_model_prototyping_and_eval.ipynb`, compares classification models on an out-of-time test set.
-
-### Models Compared
-
-- Logistic Regression
-- LightGBM
-- XGBoost
+## 🧠 Machine Learning Performance
 
 ### Champion Model: XGBoost
 
-XGBoost was selected as the champion model based on its evaluation performance.
+Evaluated on a chronological out-of-time test partition.
 
-### Test Set Performance
-
-| Metric | XGBoost |
+| Evaluation Metric | Test Performance |
 |---|---:|
-| PR-AUC | 0.9940 |
-| ROC-AUC | 0.9999 |
-| Precision | 99.64% |
-| Recall | 81.31% |
-| F1-score | 89.55% |
-| Decision threshold | 0.9571 |
+| PR-AUC | **0.9940** |
+| ROC-AUC | **0.9999** |
+| Precision | **99.64%** |
+| Recall | **81.31%** |
+| F1-Score | **89.55%** |
+| Decision Threshold | **0.9571** |
 
 ### Model Comparison
 
-| Model | PR-AUC | ROC-AUC | Precision | Recall | F1-score |
+| Model | PR-AUC | ROC-AUC | Precision | Recall | F1-Score |
 |---|---:|---:|---:|---:|---:|
 | Logistic Regression | 0.5855 | 0.9825 | 13.45% | 93.84% | 23.53% |
 | LightGBM | 0.7160 | 0.8220 | 88.13% | 80.63% | 84.21% |
-| XGBoost | **0.9940** | **0.9999** | **99.64%** | 81.31% | **89.55%** |
+| **XGBoost** | **0.9940** | **0.9999** | **99.64%** | **81.31%** | **89.55%** |
 
-### Why PR-AUC?
-
-Fraud datasets are highly imbalanced. Precision-recall evaluation helps assess how effectively a model identifies the minority fraud class without relying only on overall accuracy.
-
----
-
-## 8. Confusion Matrix
-
-The XGBoost test-set confusion matrix at threshold 0.9571:
+### Test Set Confusion Matrix
 
 | | Predicted Legitimate | Predicted Fraud |
 |---|---:|---:|
 | Actual Legitimate | 79,806 | 3 |
 | Actual Fraud | 191 | 831 |
 
-This represents:
+The model identifies most fraudulent transactions while producing very few false positives at the selected threshold.
 
-- True Negatives: 79,806
-- False Positives: 3
-- False Negatives: 191
-- True Positives: 831
-
-The model identifies most fraudulent transactions while producing very few false positives at this threshold.
+*These results are based on the project's synthetic PaySim test partition and should not be interpreted as guaranteed real-world performance.*
 
 ---
 
-## 9. Decision Threshold Policy
+## 🔬 Point-in-Time Feature Engineering
 
-The system uses a three-tier threshold policy:
+The serving pipeline uses **15 pre-authorization model features**.
 
-| Threshold | Decision |
-|---|---|
-| Probability below 0.3829 | AUTO_APPROVE |
-| Probability from 0.3829 to below 0.9571 | MANUAL_REVIEW |
-| Probability at or above 0.9571 | AUTO_BLOCK |
+Important feature categories include:
 
-The threshold policy is based on validation-set tuning.
+- Transaction amount and transaction type.
+- Origin and destination account balances.
+- Origin account drain ratio.
+- Transaction time and hour of day.
+- Merchant destination indicators.
+- Historical recipient-account activity.
 
-At the selected validation threshold, the recorded results were:
+### Chronological Dataset Split
 
-- Precision: 99.35%
-- Recall: 82.06%
-- F1-score: 89.88%
+Instead of randomly splitting transactions, the project uses chronological boundaries to simulate evaluation on future transactions.
 
-The test-set metrics and validation-set threshold-tuning metrics are reported separately.
+| Partition | Transaction Steps | Records |
+|---|---|---:|
+| Training | 1–550 | 6,166,019 |
+| Validation | 551–650 | 115,770 |
+| Testing | 651–743 | 80,831 |
+
+### Data Leakage Prevention
+
+Post-settlement information can make a fraud model appear more accurate than it would be in a real pre-authorization environment.
+
+The project:
+
+- Audits post-transaction features.
+- Removes seven leakage-prone features.
+- Maintains point-in-time recipient-account history.
+- Tests online-offline feature parity.
 
 ---
 
-## 10. Explainable AI Using SHAP
+## 💡 Explainable AI – TreeSHAP
 
-The system integrates SHAP to explain individual fraud predictions.
+The system does not return only a fraud probability. It also identifies the factors influencing an individual prediction.
 
-Rather than returning only a fraud probability, the application can display which features contributed to a transaction's risk score.
-
-### Important Features
-
-The saved XGBoost feature importance results identify these leading features:
+### Leading Model Features
 
 | Feature | Importance |
 |---|---:|
@@ -330,84 +202,146 @@ The saved XGBoost feature importance results identify these leading features:
 | `hour_of_day` | 10.48% |
 | `amount` | 7.67% |
 
-These values represent model feature importance, not causal effects.
+The application translates important feature contributions into human-readable reason codes to support transaction investigation.
+
+*Feature importance values represent model importance, not causal effects.*
 
 ---
 
-## 11. API
+## 🏗️ System Architecture
 
-The backend is implemented using FastAPI.
+```mermaid
+flowchart TD
+    A[Incoming Transaction] --> B[Feature Engineering]
+    B --> C[Point-in-Time State Cache]
+    C --> D[XGBoost Fraud Model]
+    D --> E[Fraud Probability]
+    E --> F{Decision Engine}
 
-### Main Endpoints
+    F -->|Low Risk| G[AUTO_APPROVE]
+    F -->|Medium Risk| H[MANUAL_REVIEW]
+    F -->|High Risk| I[AUTO_BLOCK]
 
-| Endpoint | Purpose |
+    D --> J[TreeSHAP Explanation]
+
+    G --> K[FastAPI]
+    H --> K
+    I --> K
+    J --> K
+
+    K --> L[Streamlit Dashboard]
+```
+
+### Prediction Workflow
+
+1. A transaction enters the system.
+2. Point-in-time features are generated.
+3. Historical destination-account information is retrieved.
+4. XGBoost calculates the fraud probability.
+5. The decision engine assigns a risk category.
+6. TreeSHAP generates prediction explanations.
+7. FastAPI returns the prediction and related information.
+8. Streamlit displays the result.
+
+---
+
+## 🧰 Technology Stack
+
+| Category | Technologies |
 |---|---|
-| `/health` | Checks API health |
-| `/predict` | Generates a fraud prediction |
+| Programming Language | Python |
+| Data Processing | Pandas, NumPy, PyArrow |
+| Machine Learning | XGBoost, LightGBM, Scikit-learn |
+| Explainable AI | SHAP / TreeSHAP |
+| Backend | FastAPI, Uvicorn |
+| Frontend | Streamlit, Plotly |
+| Model Serialization | Joblib, Pickle |
+| Testing | Pytest |
+| Containerization | Docker, Docker Compose |
+| Cloud Deployment | **Render Blueprint** |
 
-Interactive API documentation is available through FastAPI's Swagger interface at `/docs`.
+---
 
-Example local address:
+## 📂 Project Structure
 
 ```text
-http://localhost:8000/docs
+fraud-detection-system/
+│
+├── dashboard/              # Streamlit dashboard
+│   ├── app.py
+│   └── components.py
+│
+├── src/                    # Core backend and ML pipeline
+│   ├── api.py
+│   ├── config.py
+│   ├── features.py
+│   ├── explain.py
+│   ├── simulator.py
+│   ├── data_loader.py
+│   └── train.py
+│
+├── models/                 # Trained model and state artifacts
+│
+├── data/
+│   └── processed/
+│       └── test.parquet    # Test partition for dashboard demo
+│
+├── notebooks/              # EDA, feature engineering and experiments
+│
+├── tests/                  # Automated test suite
+│
+├── docs/
+│   └── screenshots/        # Application screenshots
+│       ├── live-feed.png
+│       ├── triage-queue.png
+│       ├── shap-inspector.png
+│       └── manual-testing.png
+│
+├── Dockerfile
+├── docker-compose.yml
+├── render.yaml
+├── requirements.txt
+└── README.md
 ```
 
 ---
 
-## 12. Interactive Dashboard
+## 🔌 API Endpoints
 
-The Streamlit dashboard provides a visual interface for monitoring and investigating transactions.
-
-### Dashboard Modules
-
-**Live Transaction Feed**
-
-Displays incoming simulated transactions and their prediction results.
-
-**Operations Triage**
-
-Helps inspect transaction risk and decision categories.
-
-**SHAP Transaction Inspector**
-
-Displays feature contributions behind individual predictions.
-
-**Manual Testing Sandbox**
-
-Allows users to submit transaction details and observe the model's response.
+| Endpoint | Method | Purpose |
+|---|---|---|
+| `/health` | GET | Checks API and model health |
+| `/predict` | POST | Generates transaction fraud predictions |
+| `/docs` | GET | Interactive Swagger documentation |
 
 ---
 
-## 13. Docker Setup
+## 🐳 Run Locally with Docker
 
-The application uses Docker to package its dependencies and runtime environment.
-
-### Run Locally
-
-Clone the repository:
+### 1. Clone the repository
 
 ```bash
-git clone <YOUR_GITHUB_REPOSITORY_URL>
+git clone https://github.com/Aparnaprabu/fraud-detection-system.git
+
 cd fraud-detection-system
 ```
 
-Build and start the containers:
+### 2. Build and start the application
 
 ```bash
 docker compose up --build
 ```
 
-### Access the Application
+### 3. Access the services
 
 | Service | Local URL |
 |---|---|
 | Streamlit Dashboard | http://localhost:8501 |
-| FastAPI | http://localhost:8000 |
-| API Documentation | http://localhost:8000/docs |
-| API Health | http://localhost:8000/health |
+| FastAPI Backend | http://localhost:8000 |
+| Swagger Documentation | http://localhost:8000/docs |
+| Health Endpoint | http://localhost:8000/health |
 
-To stop the containers:
+Stop the containers:
 
 ```bash
 docker compose down
@@ -415,19 +349,19 @@ docker compose down
 
 ---
 
-## 14. Testing
+## 🧪 Testing
 
-The project includes automated tests for the main system components.
+The project includes automated tests for API behavior, model functionality, feature engineering, data leakage, and explainability.
 
-Run the tests:
+Run:
 
 ```bash
-python3 -m pytest tests/ -v
+python -m pytest tests/ -v
 ```
 
 ### Verified Test Results
 
-**19 tests passed out of 19.**
+**19 out of 19 tests passed.**
 
 | Test Module | Tests Passed |
 |---|---:|
@@ -436,74 +370,48 @@ python3 -m pytest tests/ -v
 | Explainability | 3 |
 | Feature Engineering | 5 |
 | Model | 4 |
-| **Total** | **19** |
-
-The test suite covers API behavior, data leakage checks, explainability, feature engineering, and model functionality.
+| **Total** | **19/19** |
 
 ---
 
-## 15. Technology Stack
-
-| Category | Technologies |
-|---|---|
-| Programming Language | Python |
-| Data Processing | Pandas, NumPy, PyArrow |
-| Machine Learning | XGBoost, LightGBM, Scikit-learn |
-| Explainable AI | SHAP |
-| Backend | FastAPI, Uvicorn |
-| Frontend | Streamlit, Plotly |
-| Serialization | Joblib, Pickle |
-| Testing | Pytest |
-| Containerization | Docker, Docker Compose |
-| Deployment Configuration | Render Blueprint |
-
----
-
-## 16. Dataset and Model Artifacts
+## 📊 Dataset
 
 The project uses the PaySim synthetic mobile-money transaction dataset.
 
-Large raw and processed datasets are excluded from the Git repository to avoid unnecessary repository size.
+The dataset supports the study of transaction-level fraud patterns, point-in-time feature engineering, and chronological model evaluation.
 
-The serving application requires its trained model and supporting state artifacts.
-
-Important artifacts:
-
-- `models/model.pkl` — trained model used by the prediction service.
-- `models/dest_state.joblib` — historical recipient-account state cache.
-- `models/eval_metrics.json` — model evaluation results.
-- `models/feature_meta.json` — feature metadata.
-
-The repository uses Git LFS tracking for the large recipient-state artifact.
+Large raw datasets and training/validation files are excluded from the public repository. The processed test partition is included for the deployed dashboard demonstration.
 
 ---
 
-## 17. Limitations
+## ⚠️ Limitations
 
-- PaySim is a synthetic dataset and does not represent every pattern found in real financial transactions.
-- Fraud detection behavior may differ across financial institutions and transaction environments.
-- The system's performance depends on the availability and correctness of prediction-time features.
-- The reported evaluation metrics are based on the project's out-of-time test set and should not be interpreted as guaranteed real-world performance.
-- The application is a prototype and requires additional validation, security controls, monitoring, and operational testing before production financial use.
-
----
-
-## 18. Future Improvements
-
-- Evaluate the model on additional real-world or independently generated transaction datasets.
-- Improve model monitoring and fraud-pattern drift detection.
-- Add authentication and role-based access control.
-- Introduce persistent transaction storage and audit logs.
-- Optimize model serving for production-scale workloads.
-- Integrate additional real-time fraud signals.
-- Expand deployment and cloud monitoring.
+- PaySim is synthetic and may not capture every real-world fraud pattern.
+- Model performance may differ across financial institutions and transaction environments.
+- Prediction quality depends on the availability and correctness of pre-authorization features.
+- Additional validation, security controls, monitoring, and operational testing are required before production financial use.
 
 ---
 
-## 19. Project Summary
+## 🔮 Future Improvements
 
-This project demonstrates an end-to-end fraud detection workflow, from data exploration and point-in-time feature engineering to model evaluation, explainability, API development, dashboard visualization, and Docker-based execution.
+- Evaluation on additional real-world or independently generated datasets.
+- Fraud-pattern and model-drift monitoring.
+- Authentication and role-based access control.
+- Persistent transaction storage and audit logging.
+- Further optimization of model serving.
+- Integration of additional real-time fraud signals.
 
-Its central focus is not only detecting fraud, but doing so using information available before transaction authorization while making model decisions interpretable and operationally useful.
+---
 
-**Built with Python, XGBoost, FastAPI, Streamlit, SHAP, and Docker.**
+## 👩‍💻 Project
+
+**Real-Time Payment Fraud Detection System**
+
+Built using Python, XGBoost, FastAPI, Streamlit, TreeSHAP, Docker, and Render.
+
+<p align="center">
+  <a href="https://fraud-detection-dashboard-lodr.onrender.com">🚀 Live Dashboard</a> ·
+  <a href="https://fraud-detection-api-x946.onrender.com/docs">📘 API Documentation</a> ·
+  <a href="https://github.com/Aparnaprabu/fraud-detection-system">💻 GitHub Repository</a>
+</p>
