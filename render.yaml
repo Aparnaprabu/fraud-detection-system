@@ -26,7 +26,4 @@ services:
       - key: PORT
         value: 8501
       - key: API_URL
-        fromService:
-          type: web
-          name: fraud-detection-api
-          property: host
+        value: https://fraud-detection-api-x946.onrender.com
