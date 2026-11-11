@@ -186,6 +186,13 @@ The project:
 - Maintains point-in-time recipient-account history.
 - Tests online-offline feature parity.
 
+### Data Leakage Investigation
+
+An initial model trained using post-settlement balance features achieved a PR-AUC of **1.000**, indicating potential target leakage. To investigate, a depth-2 decision tree was trained using these features and achieved a PR-AUC of **0.968**, revealing that the model could exploit a simple shortcut rather than learn genuine pre-authorization fraud patterns.
+
+To prevent this, seven post-settlement features were removed from the feature set. The final model, trained exclusively on pre-authorization features, achieved a **PR-AUC of 0.994** on the out-of-time test set.
+
+This investigation helped ensure that the model relies on information available at transaction authorization time rather than information revealed after settlement.
 ---
 
 ## 💡 Explainable AI – TreeSHAP
