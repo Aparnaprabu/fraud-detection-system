@@ -56,6 +56,9 @@ st.sidebar.title("🛡️ Fraud Engine")
 st.sidebar.caption("Pre-Authorization Decision System")
 
 api_url = st.sidebar.text_input("API Base URL", value=DEFAULT_API_URL)
+if api_url and not api_url.startswith(("http://", "https://")):
+    api_url = "http://" + api_url
+api_url = api_url.rstrip("/")
 health = check_api_health(api_url)
 
 if health.get("status") == "ok":

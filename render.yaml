@@ -18,6 +18,7 @@ services:
     name: fraud-detection-dashboard
     runtime: docker
     dockerfilePath: Dockerfile
+    healthCheckPath: /_stcore/health
     dockerCommand: streamlit run dashboard/app.py --server.port 8501 --server.address 0.0.0.0
     plan: free
     region: oregon
