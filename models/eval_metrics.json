@@ -1,0 +1,76 @@
+{
+  "champion_model": "XGBoost",
+  "scale_pos_weight": 10.0,
+  "tuning_policy": {
+    "best_threshold": 0.9571,
+    "val_precision_at_threshold": 0.9935,
+    "val_recall_at_threshold": 0.8206,
+    "val_f1_at_threshold": 0.8988,
+    "tau_allow": 0.3829,
+    "tau_block": 0.9571
+  },
+  "models_comparison": {
+    "logistic_regression": {
+      "split": "Test (LR)",
+      "pr_auc": 0.5855,
+      "roc_auc": 0.9825,
+      "threshold": 0.5,
+      "precision": 0.1345,
+      "recall": 0.9384,
+      "f1_score": 0.2353,
+      "confusion_matrix": {
+        "true_negatives": 73637,
+        "false_positives": 6172,
+        "false_negatives": 63,
+        "true_positives": 959
+      }
+    },
+    "lightgbm": {
+      "split": "Test (LightGBM)",
+      "pr_auc": 0.716,
+      "roc_auc": 0.822,
+      "threshold": 0.6731,
+      "precision": 0.8813,
+      "recall": 0.8063,
+      "f1_score": 0.8421,
+      "confusion_matrix": {
+        "true_negatives": 79698,
+        "false_positives": 111,
+        "false_negatives": 198,
+        "true_positives": 824
+      }
+    },
+    "xgboost": {
+      "split": "Test (XGBoost)",
+      "pr_auc": 0.994,
+      "roc_auc": 0.9999,
+      "threshold": 0.9571,
+      "precision": 0.9964,
+      "recall": 0.8131,
+      "f1_score": 0.8955,
+      "confusion_matrix": {
+        "true_negatives": 79806,
+        "false_positives": 3,
+        "false_negatives": 191,
+        "true_positives": 831
+      }
+    }
+  },
+  "feature_importances": {
+    "amount": 0.07666933536529541,
+    "oldbalanceOrg": 0.007694626692682505,
+    "oldbalanceDest": 0.003727471921592951,
+    "hour_of_day": 0.10483361035585403,
+    "orig_drain_ratio": 0.40698471665382385,
+    "is_dest_zero_before": 0.01037465501576662,
+    "is_merchant_dest": 0.15735629200935364,
+    "type_TRANSFER": 0.1458057016134262,
+    "type_CASH_OUT": 0.05588068440556526,
+    "type_PAYMENT": 0.0,
+    "type_CASH_IN": 0.020584451034665108,
+    "type_DEBIT": 0.00041131587931886315,
+    "dest_prev_tx_count": 0.008020584471523762,
+    "dest_prev_amount_sum": 0.0008652716060169041,
+    "dest_prev_amount_mean": 0.0007912733126431704
+  }
+}

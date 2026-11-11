@@ -1,0 +1,112 @@
+{
+  "feature_names": [
+    "amount",
+    "oldbalanceOrg",
+    "oldbalanceDest",
+    "hour_of_day",
+    "orig_drain_ratio",
+    "is_dest_zero_before",
+    "is_merchant_dest",
+    "type_TRANSFER",
+    "type_CASH_OUT",
+    "type_PAYMENT",
+    "type_CASH_IN",
+    "type_DEBIT",
+    "dest_prev_tx_count",
+    "dest_prev_amount_sum",
+    "dest_prev_amount_mean"
+  ],
+  "feature_count": 15,
+  "baseline_stats": {
+    "amount": {
+      "mean": 180169.8497559998,
+      "std": 607375.8416401672,
+      "min": 0.0,
+      "max": 92445516.64
+    },
+    "oldbalanceOrg": {
+      "mean": 840653.4370175343,
+      "std": 2914293.266840841,
+      "min": 0.0,
+      "max": 59585040.37
+    },
+    "oldbalanceDest": {
+      "mean": 1098893.2091909708,
+      "std": 3375208.0844994583,
+      "min": 0.0,
+      "max": 356015889.35
+    },
+    "hour_of_day": {
+      "mean": 15.320388730556944,
+      "std": 4.311334079315448,
+      "min": 0.0,
+      "max": 23.0
+    },
+    "orig_drain_ratio": {
+      "mean": 71330.59378894199,
+      "std": 514201.3213119411,
+      "min": 0.0,
+      "max": 92445516.64
+    },
+    "is_dest_zero_before": {
+      "mean": 0.4242330424216987,
+      "std": 0.4942260694794661,
+      "min": 0.0,
+      "max": 1.0
+    },
+    "is_merchant_dest": {
+      "mean": 0.3379443040963708,
+      "std": 0.4730095006559988,
+      "min": 0.0,
+      "max": 1.0
+    },
+    "type_TRANSFER": {
+      "mean": 0.08338654162434465,
+      "std": 0.27646561937455666,
+      "min": 0.0,
+      "max": 1.0
+    },
+    "type_CASH_OUT": {
+      "mean": 0.3525816251944731,
+      "std": 0.4777738584204822,
+      "min": 0.0,
+      "max": 1.0
+    },
+    "type_PAYMENT": {
+      "mean": 0.3379443040963708,
+      "std": 0.4730095006559988,
+      "min": 0.0,
+      "max": 1.0
+    },
+    "type_CASH_IN": {
+      "mean": 0.2196193362362328,
+      "std": 0.4139887814696773,
+      "min": 0.0,
+      "max": 1.0
+    },
+    "type_DEBIT": {
+      "mean": 0.006468192848578637,
+      "std": 0.08016455807945017,
+      "min": 0.0,
+      "max": 1.0
+    },
+    "dest_prev_tx_count": {
+      "mean": 5.099931576597477,
+      "std": 7.8411938520559215,
+      "min": 0.0,
+      "max": 112.0
+    },
+    "dest_prev_amount_sum": {
+      "mean": 1358746.823842544,
+      "std": 3185675.4075008235,
+      "min": 0.0,
+      "max": 357277441.88
+    },
+    "dest_prev_amount_mean": {
+      "mean": 117895.59941283337,
+      "std": 247959.55026254986,
+      "min": 0.0,
+      "max": 32123376.67833333
+    }
+  }
+}
