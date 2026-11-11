@@ -407,6 +407,9 @@ The dataset supports the study of transaction-level fraud patterns, point-in-tim
 
 Large raw datasets and training/validation files are excluded from the public repository. The processed test partition is included for the deployed dashboard demonstration.
 
+To retrain, download PaySim from Kaggle ("PaySim synthetic financial
+dataset"), place the CSV in `data/raw/`, and run the steps in `src/`.
+
 ---
 
 ## ⚠️ Limitations & Known Constraints
@@ -422,6 +425,7 @@ Large raw datasets and training/validation files are excluded from the public re
 - **Generalization:** Model performance may vary across financial institutions, transaction environments, customer behaviour, and evolving fraud patterns.
 
 - **Production Readiness:** Additional validation on real-world datasets, security controls, model monitoring, drift detection, and operational testing are required before deployment in production financial systems.
+
 ---
 
 ## 🔮 Future Improvements
