@@ -25,7 +25,6 @@ st.set_page_config(
 # API Endpoint URL (configurable via environment variable for Docker)
 DEFAULT_API_URL = os.getenv("API_URL", "http://localhost:8000")
 
-
 def check_api_health(api_base_url: str) -> Dict[str, Any]:
     """Query API /health endpoint to check service status."""
     try:
