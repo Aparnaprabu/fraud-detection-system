@@ -22,6 +22,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY src/ /app/src/
 COPY dashboard/ /app/dashboard/
 COPY models/ /app/models/
+COPY data/processed/test.parquet /app/data/processed/test.parquet
 
 # Expose port for FastAPI
 EXPOSE 8000

@@ -52,3 +52,9 @@ data/processed/*
 
 # Exclude unused alternative model
 models/lgbm_model.pkl
+
+# Keep training and validation data private
+data/processed/*
+
+# Include only the test partition for the public demo
+!data/processed/test.parquet

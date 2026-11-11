@@ -11,6 +11,7 @@ import time
 import argparse
 import requests
 import pandas as pd
+import numpy as np
 from src.config import PROCESSED_DATA_DIR
 
 
