@@ -157,7 +157,10 @@ def extract_features(
 
 class CustomerStateCache:
     """
-    High-performance in-memory state cache for real-time online inference in FastAPI.
+    Memory-efficient destination state cache.
+
+    Large historical state is stored in memory-mapped NumPy arrays.
+    Newly encountered accounts are kept in a small in-memory dictionary.
     """
 
     def __init__(
@@ -166,39 +169,125 @@ class CustomerStateCache:
         state_file: Optional[Path] = None,
     ):
         self._state: Dict[str, List[float]] = {}
+        self._new_state: Dict[str, List[float]] = {}
+
+        self._ids = None
+        self._counts = None
+        self._sums = None
+
         if state_file and Path(state_file).exists():
-            import joblib
-            raw = joblib.load(state_file)
-            for k, (cnt, sm) in raw.items():
-                self._state[k] = [float(cnt), float(sm)]
+            directory = Path(state_file).parent
+
+            ids_path = directory / "dest_state_ids.npy"
+            counts_path = directory / "dest_state_counts.npy"
+            sums_path = directory / "dest_state_sums.npy"
+
+            required = [ids_path, counts_path, sums_path]
+            missing = [str(p) for p in required if not p.exists()]
+
+            if missing:
+                raise FileNotFoundError(
+                    "Compact destination-state files are missing: "
+                    + ", ".join(missing)
+                )
+
+            print("Loading destination state using NumPy memory mapping...")
+
+            self._ids = np.load(ids_path, mmap_mode="r")
+            self._counts = np.load(counts_path, mmap_mode="r")
+            self._sums = np.load(sums_path, mmap_mode="r")
+
+            if not (
+                len(self._ids) == len(self._counts) == len(self._sums)
+            ):
+                raise ValueError("Destination-state array lengths do not match")
+
+            print(f"Memory-mapped accounts: {len(self._ids):,}")
+
         elif preloaded_state:
             for k, (cnt, sm) in preloaded_state.items():
                 self._state[k] = [float(cnt), float(sm)]
 
-    def get_destination_history(self, name_dest: str) -> Tuple[int, float, float]:
-        """Query prior transaction count, prior amount sum, and prior mean."""
-        entry = self._state.get(name_dest)
-        if entry is None:
-            return 0, 0.0, 0.0
-        prev_count = int(entry[0])
-        prev_sum = entry[1]
+    def _find_index(self, name_dest: str) -> Optional[int]:
+        """Find an existing account in the sorted memory-mapped IDs."""
+
+        if self._ids is None or len(name_dest) > 11:
+            return None
+
+        try:
+            key = name_dest.encode("ascii")
+        except UnicodeEncodeError:
+            return None
+
+        idx = int(np.searchsorted(self._ids, key))
+
+        if idx < len(self._ids) and self._ids[idx] == key:
+            return idx
+
+        return None
+
+    def get_destination_history(
+        self, name_dest: str
+    ) -> Tuple[int, float, float]:
+        """Read prior transaction count, amount sum and mean."""
+
+        idx = self._find_index(name_dest)
+
+        if idx is not None:
+            prev_count = int(self._counts[idx])
+            prev_sum = float(self._sums[idx])
+        else:
+            entry = self._state.get(name_dest)
+
+            if entry is None:
+                prev_count = 0
+                prev_sum = 0.0
+            else:
+                prev_count = int(entry[0])
+                prev_sum = float(entry[1])
+
+        # Add transactions received since this cache was initialized.
+        delta = self._new_state.get(name_dest)
+        if delta is not None:
+            prev_count += int(delta[0])
+            prev_sum += float(delta[1])
+
         prev_mean = prev_sum / (prev_count + 1.0)
         return prev_count, prev_sum, prev_mean
 
     def update_destination(self, name_dest: str, amount: float) -> None:
-        """Update destination account state upon transaction processing."""
-        entry = self._state.get(name_dest)
+        """Update account history after feature extraction."""
+
+        if self._ids is not None:
+            # Keep all live changes separate from historical read-only arrays.
+            entry = self._new_state.get(name_dest)
+
+            if entry is None:
+                self._new_state[name_dest] = [1.0, float(amount)]
+            else:
+                entry[0] += 1.0
+                entry[1] += float(amount)
+            return
+
+        # Original behaviour for an in-memory preloaded or empty cache.
+        entry = self._new_state.get(name_dest)
+
         if entry is None:
-            self._state[name_dest] = [1.0, float(amount)]
+            entry = self._state.get(name_dest)
+
+        if entry is None:
+            self._new_state[name_dest] = [1.0, float(amount)]
         else:
             entry[0] += 1.0
             entry[1] += float(amount)
 
     def extract_online_vector(self, tx: Dict[str, Any]) -> np.ndarray:
         """
-        Convert a single raw transaction dictionary into a 1x15 numpy feature array.
-        Pre-authorization: only requires request fields and pre-clearing balances.
+        Convert one raw transaction into the canonical 15-feature vector.
+
+        Historical state is read before it is updated.
         """
+
         step = int(tx.get("step", 1))
         tx_type = str(tx.get("type", "TRANSFER")).upper()
         amount = float(tx.get("amount", 0.0))
@@ -206,19 +295,21 @@ class CustomerStateCache:
         nameDest = str(tx.get("nameDest", ""))
         oldbalanceDest = float(tx.get("oldbalanceDest", 0.0))
 
-        # Stateless pre-auth calculations
         hour_of_day = step % 24
         orig_drain_ratio = amount / (oldbalanceOrg + 1.0)
         is_dest_zero_before = 1.0 if oldbalanceDest == 0.0 else 0.0
         is_merchant_dest = 1.0 if nameDest.startswith("M") else 0.0
 
-        # Type one-hot flags
-        type_flags = [1.0 if tx_type == t else 0.0 for t in TRANSACTION_TYPES]
+        type_flags = [
+            1.0 if tx_type == t else 0.0
+            for t in TRANSACTION_TYPES
+        ]
 
-        # Stateful destination features
-        prev_count, prev_sum, prev_mean = self.get_destination_history(nameDest)
+        # Read historical state BEFORE updating it.
+        prev_count, prev_sum, prev_mean = (
+            self.get_destination_history(nameDest)
+        )
 
-        # Assemble fixed 15-dimensional feature vector
         vector = np.array([
             amount,
             oldbalanceOrg,
@@ -227,17 +318,17 @@ class CustomerStateCache:
             orig_drain_ratio,
             is_dest_zero_before,
             is_merchant_dest,
-            type_flags[0],  # TRANSFER
-            type_flags[1],  # CASH_OUT
-            type_flags[2],  # PAYMENT
-            type_flags[3],  # CASH_IN
-            type_flags[4],  # DEBIT
+            type_flags[0],
+            type_flags[1],
+            type_flags[2],
+            type_flags[3],
+            type_flags[4],
             prev_count,
             prev_sum,
             prev_mean,
         ], dtype=np.float64)
 
-        # Increment state for future transactions
+        # Update only AFTER the feature vector is constructed.
         self.update_destination(nameDest, amount)
 
         return vector.reshape(1, -1)
