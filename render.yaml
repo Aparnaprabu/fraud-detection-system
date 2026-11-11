@@ -1,0 +1,31 @@
+services:
+  # 1. FastAPI Real-Time Inference Backend
+  - type: web
+    name: fraud-detection-api
+    runtime: docker
+    dockerfilePath: Dockerfile
+    plan: free
+    region: oregon
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: PYTHONUNBUFFERED
+        value: "1"
+
+  # 2. Streamlit Operations Dashboard
+  - type: web
+    name: fraud-detection-dashboard
+    runtime: docker
+    dockerfilePath: Dockerfile
+    dockerCommand: streamlit run dashboard/app.py --server.port 8501 --server.address 0.0.0.0
+    plan: free
+    region: oregon
+    envVars:
+      - key: PORT
+        value: 8501
+      - key: API_URL
+        fromService:
+          type: web
+          name: fraud-detection-api
+          property: host
