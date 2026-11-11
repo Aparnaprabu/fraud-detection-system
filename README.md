@@ -315,6 +315,23 @@ fraud-detection-system/
 | `/docs` | GET | Interactive Swagger documentation |
 
 ---
+### ⚡ API Performance & Latency (Local Benchmark)
+
+Benchmark environment:
+- **Hardware:** Apple M2, 8 GB RAM
+- **Deployment:** Single Docker container
+- **Network:** Localhost HTTP
+- **Load:** 2,000 requests per concurrency level
+
+| Concurrency | Throughput | p50 Latency | p95 Latency | p99 Latency |
+|---|---:|---:|---:|---:|
+| 1 | 282.7 req/s | 3.39 ms | 4.89 ms | 6.59 ms |
+| 10 | 486.1 req/s | 19.90 ms | 24.27 ms | 32.20 ms |
+| 20 | 479.8 req/s | 40.27 ms | 51.39 ms | 73.49 ms |
+
+The benchmark indicates increased throughput under concurrent load, with throughput approaching a plateau beyond 10 concurrent requests.
+
+*These measurements represent local benchmark conditions and are not indicative of production cloud performance. Render free-tier latency may vary due to shared resources, network overhead, and instance startup behaviour.*
 
 ## 🐳 Run Locally with Docker
 
@@ -384,13 +401,19 @@ Large raw datasets and training/validation files are excluded from the public re
 
 ---
 
-## ⚠️ Limitations
+## ⚠️ Limitations & Known Constraints
 
-- PaySim is synthetic and may not capture every real-world fraud pattern.
-- Model performance may differ across financial institutions and transaction environments.
-- Prediction quality depends on the availability and correctness of pre-authorization features.
-- Additional validation, security controls, monitoring, and operational testing are required before production financial use.
+- **Synthetic Dataset:** PaySim is a synthetic mobile-money dataset and may not capture the complexity of real-world financial fraud. Its fraud patterns are generated using predefined rules, including fraud concentrated in `TRANSFER` and `CASH_OUT` transactions and near-total balance-drain behaviour. Consequently, the model may learn dataset-specific patterns that do not generalize to real financial environments.
 
+- **Model Comparison:** LightGBM underperformed XGBoost under the evaluated settings, including a lower ROC-AUC than Logistic Regression. The cause of this performance difference was not conclusively established. XGBoost is the selected champion model and the only model used in the deployed prediction service.
+
+- **Historical State Coverage:** The recipient-account history cache is initialized using the training period (steps 1–550). Consequently, historical recipient activity before later evaluation periods may be incomplete compared with a fully maintained historical state.
+
+- **Demonstration Sampling:** The dashboard demonstration intentionally samples transactions to include additional fraud cases for visibility. Therefore, the displayed fraud frequency does not represent the natural PaySim class distribution, where fraud prevalence is approximately 0.13%.
+
+- **Generalization:** Model performance may vary across financial institutions, transaction environments, customer behaviour, and evolving fraud patterns.
+
+- **Production Readiness:** Additional validation on real-world datasets, security controls, model monitoring, drift detection, and operational testing are required before deployment in production financial systems.
 ---
 
 ## 🔮 Future Improvements
